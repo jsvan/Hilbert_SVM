@@ -7,7 +7,7 @@ import numpy as np
 Most of these tests aren't "real" tests, they simply make a plot with points for you to visually verify...
 
 Notes on Matplotlib:
-I've wrapped matplotlib in the visualization.py file, which is mostly unnecessary. Its a package that holds some state of 
+I've wrapped matplotlib in the visualization.py file, which is mostly unnecessary. Pyplot holds some state of 
 lines on axes, which can be set, altered, and then displayed on screen (with pyplot.show()). Once displayed, the underlying
 state is cleared. While the plot is showing on screen, the rest of your code is blocked until it's closed. 
 It is always imported as:
