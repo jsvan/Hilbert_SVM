@@ -4,8 +4,23 @@ from numpy.linalg import norm
 import euclidean
 import tools
 
+"""
+This file has hilbert distance code, an OMEGA class for a convex space, and a class for points, intersections, distances etc. 
+
+A note on python syntax. 
+The star operator '*' before a variable name will unpack that variable. Ie, if the var is a tuple, it
+will convert it to two individual variables. This is a shortcut for method input parameters, '*' will unpack
+your tuples to fit neatly into the required parameter field. 
+"""
+
 
 def nielson_dist(p, q):
+   """
+   Nielson's code for finding hilbert distance. Runs on order of number of dimensions.
+   :param p: np.array(coordinates)
+   :param q: np.array(coordinates)
+   :return: float
+   """
    if np.allclose(p, q): return 0  # np.allclose returns true if all dim are within EPSILON
    idx = np.logical_not(np.isclose(p, q))  # np.isclose returns an array of bool, for each dimension if within EPSILON
    if (idx.sum() == 1): return 0  # returns 0 if only ONE dimension is not close (??)
@@ -22,11 +37,11 @@ def dist_with_boundary_intersections(p, q, A, B):
          |qB|
    |-qA--|
    |pA|
-   :param p:
-   :param q:
-   :param b1:
-   :param b2:
-   :return:
+   :param p: np.array(coordinates)
+   :param q: np.array(coordinates)
+   :param A: np.array(coordinates) boundary intersection coord close to p
+   :param B: np.array(coordinates) boundary intersection coord close to q
+   :return: float, hilbert distance between p, q
    """
    pB = norm(p - B)
    qB = norm(q - B)
@@ -36,16 +51,17 @@ def dist_with_boundary_intersections(p, q, A, B):
    return abs(log(crossratio))
 
 
-def get_euclidean_midway_point_from_hdist(p, q, hdist, A, B):
+def get_midway_point_of_hdist(p, q, hdist, A, B):
    """
    A--p--q--B
-   Will find point on line between p and q, which is hdist from both
-   :param p:
-   :param q:
-   :param hdist:
-   :param A:
-   :param B:
-   :return:
+   Will find point on line between p and q, which is hdist from q. Searches line in binary search. Maybe there's a
+   better way? I can't tell. Please let me know ;)
+   :param p: np.array(coordinates)
+   :param q: np.array(coordinates)
+   :param hdist: hilbert distance to q. Normally this should be hdist(p,q)/2
+   :param A: boundary intersection point close to p
+   :param B: boundary intersection point close to q
+   :return: np.array(coordinates)
    """
    def newpoint(t): return p + (q-p) * t
    # bsearch will be granting us t values
@@ -67,8 +83,8 @@ def get_euclidean_midway_point_from_hdist(p, q, hdist, A, B):
 
 def get_boundary_intersections(p, q, boundaries):
    """
-   :param p:
-   :param q:
+   :param p: np.array(coordinates)
+   :param q: np.array(coordinates)
    :param boundaries: list of two boundaries. Each boundary is a list of two points.
    :return: points A and B, of order A--p--q--B
    """
@@ -87,6 +103,7 @@ def get_boundary_intersections(p, q, boundaries):
 class HilbertianHodgePodge:
    """
    This exists because I dont know how to organize code. Send help.
+   Collects info having to do with p, q and omega, storing it so it won't have to be calculated multiple times.
    """
 
    def __init__(self, p, q, omega):
@@ -100,12 +117,10 @@ class HilbertianHodgePodge:
       self.A, self.B = None, None
       self.spokes = None
 
-
    def get_boundaries(self):
       if self.boundaries is None:
          self.boundaries = self.omega.find_boundaries_of_line(self.p, self.q)
       return self.boundaries
-
 
    def get_hdist(self):
       """
@@ -116,20 +131,17 @@ class HilbertianHodgePodge:
          self.hdist = dist_with_boundary_intersections(self.p, self.q, *self.get_boundary_intersections())
       return self.hdist
    
-   
    # gets hilbertian midpoint between p and q
    def get_midpoint(self):
       if self.midpoint is None:
-         self.midpoint = get_euclidean_midway_point_from_hdist(self.p, self.q, self.get_hdist() / 2, *self.get_boundary_intersections())
+         self.midpoint = get_midway_point_of_hdist(self.p, self.q, self.get_hdist() / 2, *self.get_boundary_intersections())
       return self.midpoint
-   
-   
+
    def get_boundary_intersections(self):
       if self.A is None or self.B is None:
          self.A, self.B = get_boundary_intersections(self.p, self.q, self.get_boundaries())
       return self.A, self.B
-   
-   
+
    def get_best_dividing_line(self):
       vanishing_point = euclidean.intersect(*self.get_boundaries())
       return [self.get_midpoint(), vanishing_point]
@@ -150,7 +162,6 @@ class Omega:
       :return: list of tuples: (coords of the omega vertex, lambda equation for related spoke)
       """
       return [(v, lambda t: p.coords + t * (p.coords - np.array(v))) for v in self.vertices]
-
 
    def find_boundaries_of_line(self, p, q):
       """
