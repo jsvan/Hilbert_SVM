@@ -28,7 +28,7 @@ def nielson_dist(p, q):
    t0 = lamb[lamb <= 0].max()  # t0 = resulting max element less than 0
    t1 = lamb[lamb >= 1].min()  # t1 = resulting min element bigger than 1
    if np.isclose(t0, 0) or np.isclose(t1, 1): return np.inf  # From here on idk
-   return np.abs(np.log(1 - 1 / t0) - np.log(1 - 1 / t1))
+   return np.abs(np.log(1 - 1 / t0) - np.log(1 - 1 / t1)) # mathematically equivalent to dist_with_boundary_intersections algorithm
 
 def dist_with_boundary_intersections(p, q, A, B):
    """
@@ -102,7 +102,7 @@ def get_boundary_intersections(p, q, boundaries):
 
 class HilbertianHodgePodge:
    """
-   This exists because I dont know how to organize code. Send help.
+   This exists because I dont know how to organize code.
    Collects info having to do with p, q and omega, storing it so it won't have to be calculated multiple times.
    """
 
@@ -152,7 +152,7 @@ class Omega:
 
    def __init__(self, vertices=[[0, 0], [0, 1], [1, 0]]):
       self.vertices = vertices
-      # This is a hack for binary search, wraps around the final points. Whateverr
+      # This is a hack for binary search, wraps around the final points. Whatever
       self.vertices_expanded = [vertices[-1]] + vertices + [vertices[0]]
 
 
@@ -161,7 +161,7 @@ class Omega:
       :param p: np array point in omega
       :return: list of tuples: (coords of the omega vertex, lambda equation for related spoke)
       """
-      return [(v, lambda t: p.coords + t * (p.coords - np.array(v))) for v in self.vertices]
+      return [(v, lambda t: p + t * (p - np.array(v))) for v in self.vertices]
 
    def find_boundaries_of_line(self, p, q):
       """
@@ -171,7 +171,6 @@ class Omega:
       :return: two lines, each of two points.
       """
       def find_boundary(p,q, v):
-         # :param top: There are two boundary lines to find. True/False for which of the two to look for.
          numvert = len(v)
          binarysearch = tools.BinarySearcher(0, numvert, discrete=True)
          attempts = numvert + 1
