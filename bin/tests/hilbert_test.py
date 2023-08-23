@@ -73,7 +73,7 @@ class Test_Dividing_Line(TestCase):
             midpt, vanpt = hodgepodge.get_best_dividing_line()
             ax = visualization.get_ax()
             visualization.plot_shape(ax, omega.vertices)
-            visualization.plot_points(ax, [p, q, midpt], connecting_line=True)
+            visualization.plot_points(ax, [p, q, midpt], connecting_line=[p, q])
             boundaries = hodgepodge.get_boundaries()
             ax.plot([x[0] for x in boundaries[0]], [x[1] for x in boundaries[0]], color="red")
             ax.plot([x[0] for x in boundaries[1]], [x[1] for x in boundaries[1]], color='orange')
