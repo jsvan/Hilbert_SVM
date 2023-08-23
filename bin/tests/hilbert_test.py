@@ -1,7 +1,10 @@
+import sys
+sys.path.append('..')
 import hilbert
 from unittest import TestCase
 import visualization
 import numpy as np
+
 """
 
 Most of these tests aren't "real" tests, they simply make a plot with points for you to visually verify...
@@ -13,18 +16,18 @@ state is cleared. While the plot is showing on screen, the rest of your code is 
 It is always imported as:
     from matplotlib import pyplot
 Where you play with pyplot to build underlying state before .show()-ing it. 
-pyplot.plot(x=[list of x coords], y=[list of y coords], options) creates a line plot.
-pyplot.scatter(x=[list of x coords], y=[list of y coords], options) creates individual points
+    pyplot.plot(x=[list of x coords], y=[list of y coords], options) creates a line plot.
+    pyplot.scatter(x=[list of x coords], y=[list of y coords], options) creates individual points
 You can call .plot() or .scatter() or whatever many times to overlay independent items onto the plot.
 Sometimes you need the actual axes object for some effects which aren't available if you only handle pyplot, so that's why 
 I'm playing with 'ax'. 
 
 Notes on import troubles:
 Running this might have importing packages trouble. I'm using PyCharm, and I've set the "sources root" to bin/ which 
-makes all the imports search in the correct place. If you're getting import errors, you may need to splatter a few of 
-these around so that python knows to look in that directory for the files to import.:
-    import sys     
-    sys.path.append('the missing folder/file whatever')
+makes all the imports search in the correct place. If you're getting import errors, you may need to put this at the 
+beginning of the file so that python knows to look:
+    import sys
+    sys.path.append('..')
 
 Notes on defining points:
 Notice the points aren't python lists, but numpy arrays (np.array()). They are a mathematics wrapper library on top of numerical
@@ -218,3 +221,8 @@ class Test_Arbitrary_Convex_Boundary_Line_Find(TestCase):
         visualization.plot_points(ax, points)
         visualization.show(ax, "results")
         self.assertEqual(1 + 1, 3 - 1)
+
+
+if __name__ == "__main__":
+    Test_Dividing_Line().test_dirichlet_infinite_complex_convex()
+    # Or whatever code you want
