@@ -9,4 +9,5 @@ Necessary packages: numpy, matplotlib
 [Google Slides for brainstorming this project, probably isn't up to date.](https://docs.google.com/presentation/d/1E9zr5Q8-lw9-S9Xbquw9i7hVQPRZ7FNgBtaVWxkGXkM/edit?usp=sharing) Basically this is my sketch pad to illustrate my confusions on :\)
 
 Figure: Best dividing line between two points.
-![image](https://github.com/jsvan/Hilbert_SVM/assets/9337973/53ffac56-973a-4ac2-81ca-eedaaac9c3bc)
+
+<img src="https://github.com/jsvan/Hilbert_SVM/assets/9337973/53ffac56-973a-4ac2-81ca-eedaaac9c3bc" width="50%" />
